@@ -1,37 +1,38 @@
 # Build Status
 
 ## ✅ Go Relay (relay-go/) — DEPLOYED on port 8081
-- 1,636 lines, 11 Go files
+- 1,636+ lines, 11 Go files
 - Builds cleanly with `go build ./cmd/relayd/`
 - Cross-compiled: Windows, Linux, ARM64 (Hermes)
 - Running alongside TS relay (port 8080)
 
-## ⚠️ Rust P2P Mesh (xmrt-mesh/) — SCAFFOLDED, needs build fixes
-- 734 lines, 5 Rust modules
-- Architecture: mDNS + Gossipsub + request-response + Identify
+## 🟡 Rust P2P Mesh (xmrt-mesh/) — CODE COMPLETE, needs build verification
+- 734+ lines, 5 Rust modules
+- Architecture: mDNS + Gossipsub + request-response + Identify + Go relay integration
 - **Build environment**: VS Build Tools 2022 installed ✅
-- **Remaining issues**: libp2p 0.54 API compatibility
+- **JsonCodec<Req, Res>** — Generic JSON codec implemented in `protocol.rs` ✅
+  - Handles `TaskRequest`/`TaskResponse` and `Ping`/`Pong` pairs via `PhantomData`
+  - Implements libp2p's `Codec` trait with async read/write
+  - `#[derive(Clone, Default)]` for codec construction
 
-### Known build errors to fix
+### Known issues
+1. **libp2p 0.54 API compatibility** — verify against actual libp2p 0.54 crate APIs
+2. **Windows build** — requires MSVC toolchain (`build.cmd` or `build.ps1`)
+3. **ARM64 cross-compile** — needs `aarch64-unknown-linux-gnu` target
 
-1. **Codec trait impl** — `TaskRequest`/`TaskResponse` need `Codec` impl for `request_response::Behaviour`
-2. **mDNS generic** — `mdns::Behaviour` needs type parameter for peer ID
-3. **Event generics** — `Event::From<request_response::Event<Req, Res>>` needs both generics
-4. **PingPongCodec lifetimes** — `read_request`/`read_response` signatures need adjustment
-5. **PingPongCodec: Default** — need to derive Default
+### CI
+- GitHub Actions workflow added (`.github/workflows/ci.yml`)
+- Builds on ubuntu-latest + windows-latest
+- ARM64 cross-compilation artifact
 
-### Fix approach
-See `protocol.rs` for the `PingPongCodec` reference implementation. Apply the same pattern to `TaskRequest`/`TaskResponse`, or use a single generic `JsonCodec<T>` wrapper.
+### Quick build
+```bash
+# Linux/macOS
+cargo build --release
 
-### Quick fix (minimal changes needed)
-```rust
-// In protocol.rs — add a generic JSON codec
-#[derive(Clone)]
-pub struct JsonCodec<T>(std::marker::PhantomData<T>);
+# Windows (with MSVC)
+build.cmd --release
 
-impl<T: Serialize + Deserialize + Send + 'static> Codec for JsonCodec<T> { ... }
-
-// In mesh.rs — use it
-task_rr: request_response::Behaviour<JsonCodec<TaskRequest>, JsonCodec<TaskResponse>>,
-ping_rr: request_response::Behaviour<JsonCodec<Ping>, JsonCodec<Pong>>,
+# ARM64 cross-compile
+cargo build --release --target aarch64-unknown-linux-gnu
 ```
