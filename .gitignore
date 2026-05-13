@@ -1,0 +1,5 @@
+/target
+*.exe
+*.exe~
+build/
+mesh-key.txt

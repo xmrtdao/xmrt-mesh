@@ -1,0 +1,59 @@
+[package]
+name = "xmrt-mesh"
+version = "0.1.0"
+edition = "2024"
+description = "XMRT DAO Rust P2P Mesh Node — libp2p-based agent meshnet"
+
+[dependencies]
+# Core async runtime
+tokio = { version = "1", features = ["full"] }
+
+# libp2p (P2P networking) with all needed features
+libp2p = { version = "0.54", features = [
+    "tokio",
+    "tcp",
+    "noise",
+    "yamux",
+    "mdns",
+    "gossipsub",
+    "identify",
+    "request-response",
+    "macros",
+] }
+
+# Separate libp2p sub-crates needed for the builder API
+libp2p-tcp = "0.42"
+libp2p-noise = "0.45"
+libp2p-yamux = "0.46"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Encoding
+hex = "0.4"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Error handling
+anyhow = "1"
+thiserror = "2"
+
+# HTTP client for relay integration
+reqwest = { version = "0.12", features = ["json"] }
+
+# Config
+toml = "0.8"
+
+# Random
+rand = "0.8"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

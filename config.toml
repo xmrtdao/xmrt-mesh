@@ -1,0 +1,15 @@
+# XMRT Mesh Node Configuration
+agent_name = "eliza-dev"
+port = 9000
+mdns_enabled = true
+announce_topic = "/xmrt/mesh/agents/0.1.0"
+task_protocol = "/xmrt/mesh/tasks/0.1.0"
+
+# Capabilities this agent provides
+capabilities = ["bash", "node", "python", "curl", "git"]
+
+# Go relay integration (optional)
+relay_url = "http://localhost:8081"
+
+# Bootstrap peers — add other mesh nodes here
+bootstrap_peers = []
