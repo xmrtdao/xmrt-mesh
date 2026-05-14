@@ -57,8 +57,7 @@ impl Config {
         let mut cfg: Config = if path.exists() {
             let data = std::fs::read_to_string(path)
                 .with_context(|| format!("reading config: {}", path.display()))?;
-            toml::from_str(&data)
-                .with_context(|| format!("parsing config: {}", path.display()))?
+            toml::from_str(&data).with_context(|| format!("parsing config: {}", path.display()))?
         } else {
             Config::default()
         };
@@ -90,8 +89,8 @@ impl Config {
 
 fn load_or_generate_key(key_file: &Option<String>) -> Result<Keypair> {
     if let Some(path) = key_file {
-        let data = std::fs::read_to_string(path)
-            .with_context(|| format!("reading key file: {}", path))?;
+        let data =
+            std::fs::read_to_string(path).with_context(|| format!("reading key file: {}", path))?;
         let keypair = identity::Keypair::from_protobuf_encoding(&hex::decode(data.trim())?)
             .context("decoding keypair")?;
         return Ok(keypair);
@@ -102,8 +101,7 @@ fn load_or_generate_key(key_file: &Option<String>) -> Result<Keypair> {
     // Save generated key
     let encoded = hex::encode(keypair.to_protobuf_encoding().unwrap());
     let key_path = "mesh-key.txt";
-    std::fs::write(key_path, &encoded)
-        .context("saving generated key")?;
+    std::fs::write(key_path, &encoded).context("saving generated key")?;
     tracing::info!("Generated new keypair, saved to {}", key_path);
 
     Ok(keypair)

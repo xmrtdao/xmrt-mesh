@@ -10,7 +10,11 @@ mod relay;
 
 /// XMRT DAO P2P Mesh Node — libp2p-based agent meshnet
 #[derive(Parser)]
-#[command(name = "xmrt-mesh", version = "0.1.0", about = "XMRT DAO P2P Mesh Node")]
+#[command(
+    name = "xmrt-mesh",
+    version = "0.1.0",
+    about = "XMRT DAO P2P Mesh Node"
+)]
 struct Cli {
     /// Config file path
     #[arg(short, long, default_value = "config.toml")]
@@ -60,11 +64,8 @@ async fn main() -> Result<()> {
 
     // Connect to Go relay if configured
     if let Some(relay_url) = &cfg.relay_url {
-        let relay_client = relay::RelayClient::new(
-            relay_url.clone(),
-            &cfg.agent_name,
-            &cfg.capabilities,
-        );
+        let relay_client =
+            relay::RelayClient::new(relay_url.clone(), &cfg.agent_name, &cfg.capabilities);
         relay_client.register().await?;
         mesh_node.set_relay_client(relay_client);
         tracing::info!("Connected to Go relay: {}", relay_url);

@@ -3,3 +3,4 @@
 *.exe~
 build/
 mesh-key.txt
+mesh.log

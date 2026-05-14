@@ -1,0 +1,60 @@
+[2m2026-05-14T04:09:28.632083Z[0m [32m INFO[0m [2mxmrt_mesh::config[0m[2m:[0m Generated new keypair, saved to mesh-key.txt
+[2m2026-05-14T04:09:28.632199Z[0m [32m INFO[0m [2mxmrt_mesh[0m[2m:[0m XMRT Mesh v0.1.0
+[2m2026-05-14T04:09:28.632216Z[0m [32m INFO[0m [2mxmrt_mesh[0m[2m:[0m Agent: vex
+[2m2026-05-14T04:09:28.632236Z[0m [32m INFO[0m [2mxmrt_mesh[0m[2m:[0m Listening on: /ip4/0.0.0.0/tcp/9000
+[2m2026-05-14T04:09:28.632242Z[0m [32m INFO[0m [2mxmrt_mesh[0m[2m:[0m Peer ID: 12D3KooWEnRPTYG28DrEujZdMf2VE4dXkpYDsbZMWfR5HMeVvCyM
+[2m2026-05-14T04:09:28.634678Z[0m [32m INFO[0m [2mlibp2p_swarm[0m[2m:[0m [3mlocal_peer_id[0m[2m=[0m12D3KooWEnRPTYG28DrEujZdMf2VE4dXkpYDsbZMWfR5HMeVvCyM
+[2m2026-05-14T04:09:28.636989Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:09:28.642030Z[0m [32m INFO[0m [2mlibp2p_mdns::behaviour::iface[0m[2m:[0m creating instance on iface address [3maddress[0m[2m=[0m192.168.14.164
+[2m2026-05-14T04:09:28.646890Z[0m [32m INFO[0m [2mxmrt_mesh::mesh[0m[2m:[0m Listening on: /ip4/192.168.14.164/tcp/9000
+[2m2026-05-14T04:09:28.647013Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:09:28.647068Z[0m [32m INFO[0m [2mxmrt_mesh::mesh[0m[2m:[0m Listening on: /ip4/127.0.0.1/tcp/9000
+[2m2026-05-14T04:10:31.653391Z[0m [32m INFO[0m [2mlibp2p_mdns::behaviour[0m[2m:[0m discovered peer on address [3mpeer[0m[2m=[0m12D3KooWAdM8jp6xkuQqHMgrbKtLZeuRbHs3qDMSLSaiuH3o1RxM [3maddress[0m[2m=[0m/ip4/192.168.14.164/tcp/9000/p2p/12D3KooWAdM8jp6xkuQqHMgrbKtLZeuRbHs3qDMSLSaiuH3o1RxM
+[2m2026-05-14T04:10:31.653560Z[0m [32m INFO[0m [2mxmrt_mesh::mesh[0m[2m:[0m mDNS discovered: 12D3KooWAdM8jp6xkuQqHMgrbKtLZeuRbHs3qDMSLSaiuH3o1RxM at /ip4/192.168.14.164/tcp/9000/p2p/12D3KooWAdM8jp6xkuQqHMgrbKtLZeuRbHs3qDMSLSaiuH3o1RxM
+[2m2026-05-14T04:11:28.638402Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:13:28.638239Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:15:28.638817Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:17:28.651485Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:19:28.638783Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:21:28.638201Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:23:28.638557Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:25:28.638622Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:27:28.638338Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:29:28.882860Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:31:28.675524Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:33:28.660088Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:35:28.658541Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:37:28.640989Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:39:28.639336Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:41:28.640797Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:43:28.642656Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:45:28.640889Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:47:28.639465Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:49:28.638652Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:51:28.638584Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:53:28.638901Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:55:28.637988Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:57:28.638211Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T04:59:28.639321Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:01:28.639258Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:03:28.638516Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:05:28.638169Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:07:28.646200Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:09:28.638215Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:11:28.638656Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:13:28.638564Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:15:28.638736Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:17:28.646191Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:19:28.640262Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:21:28.638762Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:23:28.638777Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:25:28.639213Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:27:28.638596Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:29:28.639077Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:31:28.644678Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:33:28.639642Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:35:28.638323Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:37:28.640973Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:39:28.638910Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:41:28.638975Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers
+[2m2026-05-14T05:43:28.638729Z[0m [33m WARN[0m [2mxmrt_mesh::mesh[0m[2m:[0m Failed to publish announcement: InsufficientPeers

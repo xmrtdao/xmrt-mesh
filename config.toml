@@ -7,8 +7,8 @@ task_protocol = "/xmrt/mesh/tasks/0.1.0"
 # Capabilities this agent provides
 capabilities = ["bash", "node", "python", "curl", "git", "powershell"]
 
-# Go relay integration (optional)
-relay_url = "http://localhost:8081"
+# Go relay integration (optional — skip if no Go relay running)
+# relay_url = "http://localhost:8081"
 
 # Bootstrap peers — add other mesh nodes here
 bootstrap_peers = []

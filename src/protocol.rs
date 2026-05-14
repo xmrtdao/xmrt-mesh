@@ -1,7 +1,7 @@
 use async_trait::async_trait;
+use libp2p::StreamProtocol;
 use libp2p::futures::prelude::*;
 use libp2p::request_response::Codec;
-use libp2p::StreamProtocol;
 use serde::{Deserialize, Serialize};
 use std::io;
 use std::marker::PhantomData;
@@ -39,7 +39,11 @@ pub struct TaskResponse {
 
 impl std::fmt::Display for TaskResponse {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "TaskResponse {{ id: {}, status: {} }}", self.task_id, self.status)
+        write!(
+            f,
+            "TaskResponse {{ id: {}, status: {} }}",
+            self.task_id, self.status
+        )
     }
 }
 
@@ -75,7 +79,9 @@ pub struct JsonCodec<Req, Res> {
 
 impl<Req, Res> JsonCodec<Req, Res> {
     pub fn new() -> Self {
-        Self { _marker: PhantomData }
+        Self {
+            _marker: PhantomData,
+        }
     }
 }
 
@@ -89,7 +95,11 @@ where
     type Request = Req;
     type Response = Res;
 
-    async fn read_request<T>(&mut self, _protocol: &Self::Protocol, io: &mut T) -> io::Result<Self::Request>
+    async fn read_request<T>(
+        &mut self,
+        _protocol: &Self::Protocol,
+        io: &mut T,
+    ) -> io::Result<Self::Request>
     where
         T: AsyncRead + Unpin + Send,
     {
@@ -98,7 +108,11 @@ where
         serde_json::from_slice(&buf).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
     }
 
-    async fn read_response<T>(&mut self, _protocol: &Self::Protocol, io: &mut T) -> io::Result<Self::Response>
+    async fn read_response<T>(
+        &mut self,
+        _protocol: &Self::Protocol,
+        io: &mut T,
+    ) -> io::Result<Self::Response>
     where
         T: AsyncRead + Unpin + Send,
     {
@@ -107,19 +121,31 @@ where
         serde_json::from_slice(&buf).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
     }
 
-    async fn write_request<T>(&mut self, _protocol: &Self::Protocol, io: &mut T, req: Self::Request) -> io::Result<()>
+    async fn write_request<T>(
+        &mut self,
+        _protocol: &Self::Protocol,
+        io: &mut T,
+        req: Self::Request,
+    ) -> io::Result<()>
     where
         T: AsyncWrite + Unpin + Send,
     {
-        let data = serde_json::to_vec(&req).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
+        let data =
+            serde_json::to_vec(&req).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
         io.write_all(&data).await
     }
 
-    async fn write_response<T>(&mut self, _protocol: &Self::Protocol, io: &mut T, res: Self::Response) -> io::Result<()>
+    async fn write_response<T>(
+        &mut self,
+        _protocol: &Self::Protocol,
+        io: &mut T,
+        res: Self::Response,
+    ) -> io::Result<()>
     where
         T: AsyncWrite + Unpin + Send,
     {
-        let data = serde_json::to_vec(&res).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
+        let data =
+            serde_json::to_vec(&res).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
         io.write_all(&data).await
     }
 }

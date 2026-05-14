@@ -8,7 +8,7 @@ use libp2p::identify;
 use libp2p::mdns;
 use libp2p::request_response::{self, ProtocolSupport};
 use libp2p::swarm::{NetworkBehaviour, SwarmEvent};
-use libp2p::{identity::Keypair, Multiaddr, StreamProtocol, Swarm, SwarmBuilder};
+use libp2p::{Multiaddr, StreamProtocol, Swarm, SwarmBuilder, identity::Keypair};
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 use std::time::Duration;
@@ -48,19 +48,29 @@ pub enum Event {
 }
 
 impl From<mdns::Event> for Event {
-    fn from(e: mdns::Event) -> Self { Event::Mdns(e) }
+    fn from(e: mdns::Event) -> Self {
+        Event::Mdns(e)
+    }
 }
 impl From<identify::Event> for Event {
-    fn from(e: identify::Event) -> Self { Event::Identify(e) }
+    fn from(e: identify::Event) -> Self {
+        Event::Identify(e)
+    }
 }
 impl From<gossipsub::Event> for Event {
-    fn from(e: gossipsub::Event) -> Self { Event::Gossipsub(e) }
+    fn from(e: gossipsub::Event) -> Self {
+        Event::Gossipsub(e)
+    }
 }
 impl From<request_response::Event<TaskRequest, TaskResponse>> for Event {
-    fn from(e: request_response::Event<TaskRequest, TaskResponse>) -> Self { Event::TaskRR(e) }
+    fn from(e: request_response::Event<TaskRequest, TaskResponse>) -> Self {
+        Event::TaskRR(e)
+    }
 }
 impl From<request_response::Event<Ping, Pong>> for Event {
-    fn from(e: request_response::Event<Ping, Pong>) -> Self { Event::PingRR(e) }
+    fn from(e: request_response::Event<Ping, Pong>) -> Self {
+        Event::PingRR(e)
+    }
 }
 
 /// The P2P mesh node.
@@ -115,8 +125,7 @@ impl MeshNode {
                 StreamProtocol::try_from_owned(task_protocol).unwrap(),
                 ProtocolSupport::Full,
             )],
-            request_response::Config::default()
-                .with_request_timeout(Duration::from_secs(60)),
+            request_response::Config::default().with_request_timeout(Duration::from_secs(60)),
         );
 
         // --- Request-Response (Ping) ---
@@ -125,8 +134,7 @@ impl MeshNode {
                 StreamProtocol::new("/xmrt/mesh/ping/0.1.0"),
                 ProtocolSupport::Full,
             )],
-            request_response::Config::default()
-                .with_request_timeout(Duration::from_secs(10)),
+            request_response::Config::default().with_request_timeout(Duration::from_secs(10)),
         );
 
         // Build swarm
@@ -195,10 +203,12 @@ impl MeshNode {
         };
 
         let data = serde_json::to_vec(&announcement).unwrap();
-        if let Err(e) = self.swarm.behaviour_mut().gossipsub.publish(
-            self.announce_topic.clone(),
-            data,
-        ) {
+        if let Err(e) = self
+            .swarm
+            .behaviour_mut()
+            .gossipsub
+            .publish(self.announce_topic.clone(), data)
+        {
             warn!("Failed to publish announcement: {e}");
         } else {
             info!("Announced capabilities: {:?}", self.config.capabilities);
@@ -225,15 +235,13 @@ impl MeshNode {
 
     async fn handle_event(&mut self, event: SwarmEvent<Event>) -> Result<()> {
         match event {
-            SwarmEvent::Behaviour(behaviour_event) => {
-                match behaviour_event {
-                    Event::Mdns(e) => self.handle_mdns(e).await,
-                    Event::Identify(e) => self.handle_identify(e).await,
-                    Event::Gossipsub(e) => self.handle_gossipsub(e).await?,
-                    Event::TaskRR(e) => self.handle_task_rr(e).await?,
-                    Event::PingRR(e) => self.handle_ping_rr(e).await,
-                }
-            }
+            SwarmEvent::Behaviour(behaviour_event) => match behaviour_event {
+                Event::Mdns(e) => self.handle_mdns(e).await,
+                Event::Identify(e) => self.handle_identify(e).await,
+                Event::Gossipsub(e) => self.handle_gossipsub(e).await?,
+                Event::TaskRR(e) => self.handle_task_rr(e).await?,
+                Event::PingRR(e) => self.handle_ping_rr(e).await,
+            },
             SwarmEvent::NewListenAddr { address, .. } => {
                 info!("Listening on: {address}");
             }
@@ -302,29 +310,32 @@ impl MeshNode {
         event: request_response::Event<TaskRequest, TaskResponse>,
     ) -> Result<()> {
         match event {
-            request_response::Event::Message { peer, message } => {
-                match message {
-                    request_response::Message::Request {
-                        request, channel, ..
-                    } => {
-                        info!(
-                            "Task request from {peer}: {} — {}",
-                            request.task_id, request.title
-                        );
-                        self.task_count += 1;
-                        let response = self.process_task(&request).await;
-                        if let Err(e) = self.swarm.behaviour_mut().task_rr.send_response(channel, response) {
-                            warn!("Failed to send task response: {e}");
-                        }
-                    }
-                    request_response::Message::Response { response, .. } => {
-                        info!("Task response: {} — {}", response.task_id, response.status);
-                        if let Some(relay) = &self.relay_client {
-                            relay.report_result(&response).await;
-                        }
+            request_response::Event::Message { peer, message } => match message {
+                request_response::Message::Request {
+                    request, channel, ..
+                } => {
+                    info!(
+                        "Task request from {peer}: {} — {}",
+                        request.task_id, request.title
+                    );
+                    self.task_count += 1;
+                    let response = self.process_task(&request).await;
+                    if let Err(e) = self
+                        .swarm
+                        .behaviour_mut()
+                        .task_rr
+                        .send_response(channel, response)
+                    {
+                        warn!("Failed to send task response: {e}");
                     }
                 }
-            }
+                request_response::Message::Response { response, .. } => {
+                    info!("Task response: {} — {}", response.task_id, response.status);
+                    if let Some(relay) = &self.relay_client {
+                        relay.report_result(&response).await;
+                    }
+                }
+            },
             _ => {}
         }
         Ok(())
@@ -332,46 +343,47 @@ impl MeshNode {
 
     async fn handle_ping_rr(&mut self, event: request_response::Event<Ping, Pong>) {
         match event {
-            request_response::Event::Message { peer, message } => {
-                match message {
-                    request_response::Message::Request { channel, .. } => {
-                        let pong = Pong {
-                            agent_name: self.config.agent_name.clone(),
-                            peer_id: self.keypair.public().to_peer_id().to_string(),
-                            uptime_secs: self.start_time.elapsed().as_secs(),
-                            task_count: self.task_count,
-                        };
-                        if let Err(e) = self.swarm.behaviour_mut().ping_rr.send_response(channel, pong) {
-                            warn!("Failed to send pong to {peer}: {e}");
-                        }
-                    }
-                    request_response::Message::Response { response, .. } => {
-                        trace!("Pong from {peer}: {response}");
+            request_response::Event::Message { peer, message } => match message {
+                request_response::Message::Request { channel, .. } => {
+                    let pong = Pong {
+                        agent_name: self.config.agent_name.clone(),
+                        peer_id: self.keypair.public().to_peer_id().to_string(),
+                        uptime_secs: self.start_time.elapsed().as_secs(),
+                        task_count: self.task_count,
+                    };
+                    if let Err(e) = self
+                        .swarm
+                        .behaviour_mut()
+                        .ping_rr
+                        .send_response(channel, pong)
+                    {
+                        warn!("Failed to send pong to {peer}: {e}");
                     }
                 }
-            }
+                request_response::Message::Response { response, .. } => {
+                    trace!("Pong from {peer}: {response}");
+                }
+            },
             _ => {}
         }
     }
 
     async fn process_task(&self, request: &TaskRequest) -> TaskResponse {
         match request.capability.as_str() {
-            "bash" | "shell" => {
-                match execute_shell(&request.payload) {
-                    Ok(output) => TaskResponse {
-                        task_id: request.task_id.clone(),
-                        status: "completed".into(),
-                        result: Some(output),
-                        error: None,
-                    },
-                    Err(e) => TaskResponse {
-                        task_id: request.task_id.clone(),
-                        status: "failed".into(),
-                        result: None,
-                        error: Some(e.to_string()),
-                    },
-                }
-            }
+            "bash" | "shell" => match execute_shell(&request.payload) {
+                Ok(output) => TaskResponse {
+                    task_id: request.task_id.clone(),
+                    status: "completed".into(),
+                    result: Some(output),
+                    error: None,
+                },
+                Err(e) => TaskResponse {
+                    task_id: request.task_id.clone(),
+                    status: "failed".into(),
+                    result: None,
+                    error: Some(e.to_string()),
+                },
+            },
             _ => TaskResponse {
                 task_id: request.task_id.clone(),
                 status: "rejected".into(),
@@ -391,7 +403,10 @@ impl MeshNode {
 }
 
 fn execute_shell(payload: &serde_json::Value) -> Result<String, std::io::Error> {
-    let command = payload.get("command").and_then(|v| v.as_str()).unwrap_or("echo hello");
+    let command = payload
+        .get("command")
+        .and_then(|v| v.as_str())
+        .unwrap_or("echo hello");
     let output = std::process::Command::new("sh")
         .arg("-c")
         .arg(command)

@@ -27,10 +27,7 @@ impl RelayClient {
     /// Register with the Go relay via its REST API.
     pub async fn register(&self) -> Result<()> {
         let url = format!("{}/api/v1/agents", self.base_url);
-        let resp = self.client
-            .get(&url)
-            .send()
-            .await?;
+        let resp = self.client.get(&url).send().await?;
 
         tracing::info!("Relay registration check: {}", resp.status());
         Ok(())
