@@ -1,12 +1,11 @@
-# XMRT Mesh Node Configuration
-agent_name = "eliza-dev"
+agent_name = "vex"
 port = 9000
 mdns_enabled = true
 announce_topic = "/xmrt/mesh/agents/0.1.0"
 task_protocol = "/xmrt/mesh/tasks/0.1.0"
 
 # Capabilities this agent provides
-capabilities = ["bash", "node", "python", "curl", "git"]
+capabilities = ["bash", "node", "python", "curl", "git", "powershell"]
 
 # Go relay integration (optional)
 relay_url = "http://localhost:8081"

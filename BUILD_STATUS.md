@@ -6,33 +6,20 @@
 - Cross-compiled: Windows, Linux, ARM64 (Hermes)
 - Running alongside TS relay (port 8080)
 
-## 🟡 Rust P2P Mesh (xmrt-mesh/) — CODE COMPLETE, needs build verification
+## 🟢 Rust P2P Mesh (xmrt-mesh/) — BUILD SUCCESSFUL ✅
 - 734+ lines, 5 Rust modules
 - Architecture: mDNS + Gossipsub + request-response + Identify + Go relay integration
-- **Build environment**: VS Build Tools 2022 installed ✅
-- **JsonCodec<Req, Res>** — Generic JSON codec implemented in `protocol.rs` ✅
-  - Handles `TaskRequest`/`TaskResponse` and `Ping`/`Pong` pairs via `PhantomData`
-  - Implements libp2p's `Codec` trait with async read/write
-  - `#[derive(Clone, Default)]` for codec construction
+- libp2p 0.54.1 — compatible with installed crate versions ✅
+- **Windows build (MSVC):** `cargo build --release` — compiles clean ✅
+- **Binary:** `target/release/xmrt-mesh.exe` (7.2MB)
+- **Config:** `config.toml` — agent name, port, capabilities, bootstrap peers
+- **Hermes (ARM64 Termux):** `cargo build --release` on-device via `pkg install rust`
 
-### Known issues
-1. **libp2p 0.54 API compatibility** — verify against actual libp2p 0.54 crate APIs
-2. **Windows build** — requires MSVC toolchain (`build.cmd` or `build.ps1`)
-3. **ARM64 cross-compile** — needs `aarch64-unknown-linux-gnu` target
-
-### CI
-- GitHub Actions workflow added (`.github/workflows/ci.yml`)
-- Builds on ubuntu-latest + windows-latest
-- ARM64 cross-compilation artifact
-
-### Quick build
-```bash
-# Linux/macOS
-cargo build --release
-
-# Windows (with MSVC)
-build.cmd --release
-
-# ARM64 cross-compile
-cargo build --release --target aarch64-unknown-linux-gnu
-```
+### API migration fixes applied
+- `mdns::Behaviour` → `mdns::tokio::Behaviour` (Tokio provider generic)
+- `request_response::Behaviour::new` — takes 2 args (protocols + config), codec via generic
+- `JsonCodec` uses `#[async_trait]` with `futures::io::AsyncRead/Write` (not tokio)
+- `StreamProtocol::try_from_owned()` for dynamic protocol strings
+- `with_tcp` — security closure signature: `FnOnce(&Keypair) -> Result<_, _>`
+- `gossipsub::subscribe` takes `&Topic<H>`, not `&TopicHash`
+- `identify::Event` patterns need `..` for optional fields

@@ -1,7 +1,8 @@
 use crate::config::Config;
 use crate::protocol::{CapabilityAnnouncement, JsonCodec, Ping, Pong, TaskRequest, TaskResponse};
 use crate::relay::RelayClient;
-use anyhow::{Context, Result};
+use anyhow::Result;
+use libp2p::futures::StreamExt;
 use libp2p::gossipsub::{self, MessageAuthenticity, MessageId, TopicHash};
 use libp2p::identify;
 use libp2p::mdns;
@@ -22,7 +23,7 @@ type PingCodec = JsonCodec<Ping, Pong>;
 #[behaviour(to_swarm = "Event")]
 pub struct MeshBehaviour {
     /// mDNS for local peer discovery
-    mdns: mdns::Behaviour<mdns::Tokio>,
+    mdns: mdns::tokio::Behaviour,
 
     /// Identify protocol for exchanging peer info
     identify: identify::Behaviour,
@@ -39,15 +40,15 @@ pub struct MeshBehaviour {
 
 #[allow(clippy::large_enum_variant)]
 pub enum Event {
-    Mdns(mdns::Event<mdns::Tokio>),
+    Mdns(mdns::Event),
     Identify(identify::Event),
     Gossipsub(gossipsub::Event),
     TaskRR(request_response::Event<TaskRequest, TaskResponse>),
     PingRR(request_response::Event<Ping, Pong>),
 }
 
-impl From<mdns::Event<mdns::Tokio>> for Event {
-    fn from(e: mdns::Event<mdns::Tokio>) -> Self { Event::Mdns(e) }
+impl From<mdns::Event> for Event {
+    fn from(e: mdns::Event) -> Self { Event::Mdns(e) }
 }
 impl From<identify::Event> for Event {
     fn from(e: identify::Event) -> Self { Event::Identify(e) }
@@ -103,17 +104,19 @@ impl MeshNode {
         let gossipsub = gossipsub::Behaviour::new(
             MessageAuthenticity::Signed(keypair.clone()),
             gossipsub_config,
-        )?;
+        )
+        .map_err(|e| anyhow::anyhow!("gossipsub: {e}"))?;
+
+        let task_protocol = config.task_protocol.clone();
 
         // --- Request-Response (Tasks) ---
         let task_rr = request_response::Behaviour::new(
             vec![(
-                StreamProtocol::new(&config.task_protocol),
+                StreamProtocol::try_from_owned(task_protocol).unwrap(),
                 ProtocolSupport::Full,
             )],
             request_response::Config::default()
                 .with_request_timeout(Duration::from_secs(60)),
-            JsonCodec::new(),
         );
 
         // --- Request-Response (Ping) ---
@@ -124,7 +127,6 @@ impl MeshNode {
             )],
             request_response::Config::default()
                 .with_request_timeout(Duration::from_secs(10)),
-            JsonCodec::new(),
         );
 
         // Build swarm
@@ -141,13 +143,13 @@ impl MeshNode {
             .with_tcp(
                 libp2p::tcp::Config::default(),
                 libp2p::noise::Config::new,
-                libp2p::yamux::Config::default(),
+                || libp2p::yamux::Config::default(),
             )?
             .with_behaviour(|_| behaviour)?
             .with_swarm_config(|c| c.with_idle_connection_timeout(Duration::from_secs(120)))
             .build();
 
-        let announce_topic = gossipsub::IdentTopic::new(&config.announce_topic).hash();
+        let announce_topic_hash = gossipsub::IdentTopic::new(&config.announce_topic).hash();
 
         let mut node = Self {
             swarm,
@@ -156,10 +158,12 @@ impl MeshNode {
             task_count: 0,
             start_time: std::time::Instant::now(),
             relay_client: None,
-            announce_topic,
+            announce_topic: announce_topic_hash,
         };
 
-        node.swarm.behaviour_mut().gossipsub.subscribe(&node.announce_topic)?;
+        // Subscribe to the announce topic using IdentTopic
+        let topic = gossipsub::IdentTopic::new(&config.announce_topic);
+        node.swarm.behaviour_mut().gossipsub.subscribe(&topic)?;
 
         Ok(node)
     }
@@ -245,7 +249,7 @@ impl MeshNode {
         Ok(())
     }
 
-    async fn handle_mdns(&mut self, event: mdns::Event<mdns::Tokio>) {
+    async fn handle_mdns(&mut self, event: mdns::Event) {
         match event {
             mdns::Event::Discovered(list) => {
                 for (peer_id, addr) in list {
@@ -262,10 +266,10 @@ impl MeshNode {
 
     async fn handle_identify(&mut self, event: identify::Event) {
         match event {
-            identify::Event::Received { peer_id, info } => {
+            identify::Event::Received { peer_id, info, .. } => {
                 info!("Identified peer {peer_id}: {:?}", info.protocol_version);
             }
-            identify::Event::Sent { peer_id } => {
+            identify::Event::Sent { peer_id, .. } => {
                 trace!("Identify sent to {peer_id}");
             }
             _ => {}
@@ -309,7 +313,9 @@ impl MeshNode {
                         );
                         self.task_count += 1;
                         let response = self.process_task(&request).await;
-                        self.swarm.behaviour_mut().task_rr.send_response(channel, response)?;
+                        if let Err(e) = self.swarm.behaviour_mut().task_rr.send_response(channel, response) {
+                            warn!("Failed to send task response: {e}");
+                        }
                     }
                     request_response::Message::Response { response, .. } => {
                         info!("Task response: {} — {}", response.task_id, response.status);
@@ -340,7 +346,7 @@ impl MeshNode {
                         }
                     }
                     request_response::Message::Response { response, .. } => {
-                        trace!("Pong from {peer}: {:?}", response);
+                        trace!("Pong from {peer}: {response}");
                     }
                 }
             }
