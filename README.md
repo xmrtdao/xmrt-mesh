@@ -1,5 +1,9 @@
 # XMRT Mesh — Rust P2P Agent Meshnet
 
+**Live Site:** [https://xmrtdao.github.io/xmrt-mesh/](https://xmrtdao.github.io/xmrt-mesh/) | [Fleet Dashboard](https://relay.mobilemonero.com)
+
+---
+
 libp2p-based distributed mesh networking for the XMRT DAO agent fleet.
 
 ## Architecture
